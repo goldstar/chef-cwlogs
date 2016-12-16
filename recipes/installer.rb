@@ -8,10 +8,11 @@ template '/tmp/cwlogs.cfg' do
   source 'awslogs.conf.erb'
   owner 'root'
   group 'root'
-  mode 0644
-  variables ({
-    :logfiles => node['cwlogs']['logfiles']
-  })
+  mode 0o644
+  variables(
+    logfiles: node['cwlogs']['logfiles']
+  )
+
   notifies :restart, 'service[awslogs]'
 end
 
@@ -21,10 +22,10 @@ end
 
 remote_file '/opt/aws/cloudwatch/awslogs-agent-setup.py' do
   source 'https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py'
-  mode '0755'
+  mode 0o755
 end
 
 execute 'Install CloudWatch Logs agent' do
   command "/opt/aws/cloudwatch/awslogs-agent-setup.py -n -r #{node['cwlogs']['region']} -c /tmp/cwlogs.cfg"
-  not_if { system 'pgrep -f aws-logs-agent-setup' }
+  not_if 'pgrep -f awslogs'
 end

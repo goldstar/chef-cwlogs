@@ -1,0 +1,24 @@
+Style/SpaceBeforeFirstArg:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+AllCops:
+  # Include common Ruby source files.
+  Include:
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - '**/Berksfile'
+    - '**/metadata.rb'
+    - '**/providers/**/*.rb'
+    - '**/libraries/**/*.rb'
+    - '**/recipes/**/*.rb'
+    - '**/attributes/**/*.rb'
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
+    - 'vendor/**/*'
+
+Metrics/LineLength:
+  Max: 180 # File paths and whatnot get really long in Chef.
