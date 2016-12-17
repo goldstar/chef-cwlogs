@@ -1,11 +1,11 @@
 resource_name :circleci_artifact
 
 property :log_group_name, String
-property :log_stream_name, Integer, default: '{instance_id}'
+property :log_stream_name, String, default: '{instance_id}'
 property :datetime_format, String
 property :time_zone, String
-property :stream_name:, String, name_attribute: true
-property :file:, String, name_attribute: true
+property :stream_name, String, name_attribute: true
+property :file, String, name_attribute: true
 property :file_fingerprint_lines, [String, Integer]
 property :multi_line_start_pattern, String
 property :initial_position, String

@@ -38,7 +38,21 @@ remote_file setup_script do
   not_if { ::File.exist?(setup_script) }
 end
 
+template "/tmp/cwlogs-install.conf" do
+  source 'awslogs.conf.erb'
+  owner 'root'
+  group 'root'
+  mode 0o644
+  if ::File.exist?("#{node['cwlogs']['base_dir']}/bin/aws")
+    action :delete
+  else
+    action :create
+  end
+end
+
 execute 'Install CloudWatch Logs Agent' do
-  command "#{setup_script} -n -r #{node['cwlogs']['region']} -c #{node['cwlogs']['base_dir']}/etc/awslogs.conf"
-  not_if 'pgrep -f awslogs'
+  command "#{setup_script} -n -r #{node['cwlogs']['region']} -c /tmp/cwlogs-install.conf"
+  live_stream true
+  timeout 600
+  not_if { ::File.exist?("#{node['cwlogs']['base_dir']}/bin/aws") }
 end

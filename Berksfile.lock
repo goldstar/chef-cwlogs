@@ -1,0 +1,10 @@
+DEPENDENCIES
+  cwlogs
+    path: .
+  cwlogs_test
+    path: test/cookbooks/cwlogs_test
+
+GRAPH
+  cwlogs (0.0.3)
+  cwlogs_test (0.1.0)
+    cwlogs (>= 0.0.0)
