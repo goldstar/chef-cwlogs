@@ -1,0 +1,40 @@
+# DO NOT EDIT! This file is managed by Chef.
+# ALL CHANGES WILL BE LOST NEXT TIME CHEF RUNS!
+# http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
+[<%= @stream_name %>]
+log_group_name = <%= @log_group_name %>
+log_stream_name = <%= @log_stream_name %>
+<% unless @datetime_format.nil? %>
+datetime_format = <%= @datetime_format %>
+<% end %>
+<% unless @time_zone.nil? %>
+time_zone = <%= @time_zone %>
+<% end %>
+<% unless @file.nil? %>
+file = <%= @file %>
+<% end %>
+<% unless @file_fingerprint_lines.nil? %>
+file_fingerprint_lines = <%= @file_fingerprint_lines %>
+<% end %>
+<% unless @multi_line_start_pattern.nil? %>
+multi_line_start_pattern = <%= @multi_line_start_pattern %>
+<% end %>
+<% unless @initial_position.nil? %>
+initial_position = <%= @initial_position %>
+<% end %>
+<% unless @encoding.nil? %>
+encoding = <%= @encoding %>
+<% end %>
+<% unless @buffer_duration.nil? || @buffer_duration < 5000 %>
+# How long to buffer in ms. Defaults to 5000ms, which is the shortest duration.
+buffer_duration = <%= @buffer_duration %>
+<% end %>
+<% unless @batch_count.nil? || @batch_count > 10000 %>
+# Defaults to 1000. Cannot be higher than 10000.
+batch_count = <%= @batch_count %>
+<% end %>
+<% unless @batch_size.nil? || @batch_size > 1048576 %>
+# Default is 32768 bytes. Size is calculated in UTF-8 plus 26 bytes for
+# each log event.
+batch_size = <%= @batch_size %>
+<% end %>
