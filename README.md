@@ -17,16 +17,16 @@ A Chef recipe for installing and configure Amazone CloudWatch Logs Agent.
 
 <table>
   <tr>
-    <td><tt>['cwlogs']['region']</tt></td>
-    <td>String</td>
-    <td>_(Required)_ The AWS region where the CloudWatch Logs are stored</td>
-    <td><tt>nil</tt></td>
-  </tr>
-  <tr>
     <th>Key</th>
     <th>Type</th>
     <th>Description</th>
     <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>['cwlogs']['region']</tt></td>
+    <td>String</td>
+    <td>_(Required)_ The AWS region where the CloudWatch Logs are stored</td>
+    <td><tt>nil</tt></td>
   </tr>
   <tr>
     <td><tt>['cwlogs']['aws_access_key_id']</tt></td>
