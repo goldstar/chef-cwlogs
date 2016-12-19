@@ -22,10 +22,12 @@ provisioner:
 platforms:
   - name: ubuntu-12.04
   - name: ubuntu-14.04
+<% if !ENV.key?('CI') %>
   - name: ubuntu-16.04
     driver:
       name: vagrant
       box: bento/ubuntu-16.04
+<% end %>
 
 suites:
   - name: default
