@@ -1,0 +1,14 @@
+[Unit]
+Description=The CloudWatch Logs Agent
+After=rc-local.service
+
+[Service]
+Type=simple
+Restart=always
+KillMode=process
+TimeoutSec=infinity
+PIDFile=<%= node['cwlogs']['base_dir'] %>/state/awslogs.pid
+ExecStart=<%= node['cwlogs']['base_dir'] %>/bin/awslogs-agent-launcher.sh &
+
+[Install]
+WantedBy=multi-user.target

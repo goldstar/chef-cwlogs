@@ -2,6 +2,9 @@
 driver:
   name: docker
   use_sudo: false
+  dns:
+    - 8.8.8.8
+    - 8.8.4.4
 
 driver_config:
   socket: <%= ENV['DOCKER_HOST'] || 'unix:///var/run/docker.sock' %>
@@ -19,6 +22,10 @@ provisioner:
 platforms:
   - name: ubuntu-12.04
   - name: ubuntu-14.04
+  - name: ubuntu-16.04
+    driver:
+      name: vagrant
+      box: bento/ubuntu-16.04
 
 suites:
   - name: default

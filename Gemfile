@@ -6,4 +6,5 @@ source 'https://rubygems.org' do
   gem 'rake', '~>11.3'
   gem 'test-kitchen', '1.14.0'
   gem 'kitchen-docker', '~>2.6'
+  gem 'kitchen-vagrant'
 end

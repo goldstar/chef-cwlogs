@@ -5,6 +5,8 @@ DEPENDENCIES
     path: test/cookbooks/cwlogs_test
 
 GRAPH
+  cron (3.0.0)
   cwlogs (0.0.3)
+    cron (>= 0.0.0)
   cwlogs_test (0.1.0)
     cwlogs (>= 0.0.0)

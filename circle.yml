@@ -3,4 +3,4 @@ test:
   override:
     - bundle exec rake style:chef
     - bundle exec rake style:ruby
-    - bundle exec kitchen test
+    - bundle exec kitchen test default-ubuntu-1404

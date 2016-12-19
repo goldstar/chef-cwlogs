@@ -11,3 +11,5 @@ issues_url       'https://github.com/MikeSchuette/chef-cwlogs/issues'
 %w(ubuntu debian centos redhat fedora).each do |os|
   supports os
 end
+
+depends 'cron' # Ubuntu 12.04 doesn't support /etc/cron.d

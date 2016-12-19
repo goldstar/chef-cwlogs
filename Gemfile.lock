@@ -116,6 +116,8 @@ GEM
     json (2.0.2)
     kitchen-docker (2.6.0)
       test-kitchen (>= 1.0.0)
+    kitchen-vagrant (0.21.1)
+      test-kitchen (~> 1.4)
     libyajl2 (1.2.0)
     mini_portile2 (2.1.0)
     minitar (0.5.4)
@@ -270,6 +272,7 @@ DEPENDENCIES
   chefspec (~> 5.3)!
   foodcritic (~> 8.1)!
   kitchen-docker (~> 2.6)!
+  kitchen-vagrant!
   rake (~> 11.3)!
   rubocop (= 0.45.0)!
   test-kitchen (= 1.14.0)!
