@@ -26,7 +26,7 @@ end
 
 action :create do
   stream_name = sanitize(new_resource.name)
-  log_group_name = log_group_name.length ? log_group_name : new_resource.name
+  log_group_name = log_group_name.nil? ? new_resource.name : log_group_name
 
   template "#{node['cwlogs']['base_dir']}/etc/config/#{stream_name}.conf" do
     source 'log_file.conf.erb'
