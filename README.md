@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/goldstar/chef-cwlogs.svg?style=svg&circle-token=27720786c120c7748a5072579e16afbb39827577)](https://circleci.com/gh/goldstar/chef-cwlogs)
+
 # `cwlogs`
 
 A Chef recipe for installing and configure Amazone CloudWatch Logs Agent.
