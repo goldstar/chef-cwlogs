@@ -1,10 +1,9 @@
-resource_name :circleci_artifact
+resource_name :cwlogs_log_file
 
 property :log_group_name, String
-property :log_stream_name, String, default: '{instance_id}'
-property :datetime_format, String
+property :log_stream_name, String, default: '{hostname}'
+property :datetime_format, String, default: '%b %d %H:%M:%S'
 property :time_zone, String
-property :stream_name, String, name_attribute: true
 property :file, String, name_attribute: true
 property :file_fingerprint_lines, [String, Integer]
 property :multi_line_start_pattern, String
@@ -19,14 +18,29 @@ property :mode, [String, Integer], default: '0644'
 
 default_action :create if defined?(default_action)
 
+
+def sanitize(log_group_name)
+  clean_name = log_group_name.gsub(/^[^0-9A-Z]/i, '')
+  clean_name = clean_name.gsub(/[^0-9A-Z]$/i, '')
+  clean_name.gsub(/[^0-9A-Z]/i, '_')
+end
+
 action :create do
+  stream_name = sanitize(new_resource.name)
+
+  # Defaults log_group_name to the name attribute.
+  if log_group_name.length
+    log_group_name = new_resource.name
+  end
+
   template "#{node['cwlogs']['base_dir']}/etc/config/#{stream_name}.conf" do
+    source 'log_file.conf.erb'
+    cookbook 'cwlogs'
     variables({
       :log_group_name => log_group_name,
       :log_stream_name => log_stream_name,
       :datetime_format => datetime_format,
       :time_zone => time_zone,
-      :stream_name => stream_name,
       :file => file,
       :file_fingerprint_lines => file_fingerprint_lines,
       :multi_line_start_pattern => multi_line_start_pattern,
@@ -45,6 +59,7 @@ action :create do
 end
 
 action :delete do
+  stream_name = sanitize(new_resource.name)
   template "#{node['cwlogs']['base_dir']}/etc/config/#{stream_name}.conf" do
     action :delete
   end

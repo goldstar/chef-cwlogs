@@ -1,54 +1,110 @@
-Description
-===========
+# `cwlogs`
 
-Installs the CloudWatch Logs client and enables easy configuration of multiple logs via attributes.
+A Chef recipe for installing and configure Amazone CloudWatch Logs Agent.
 
+## Requirements
 
-# Supported OS
-Currently all linux OS's are supported.
+### Platforms
 
-On Amazon Linux the yum package will be used.
+- Ubuntu 14.04 
+- Ubuntu 16.04
 
-# Usage
-Logs are configured by appending to the `['cwlogs']['logfiles']` attribute from any recipe.  You can configure as many
-logs as needed.  Simply include the default cwlogs recipe in your runlist after all recipes which define a log.
+### Chef
 
+- Chef 12.0 or later
 
-# Example
+## Attributes
 
-    default['cwlogs']['logfiles']['mysite-httpd_access'] = {
-        :log_stream_name => '{instance_id}',
-        :log_group_name => 'mysite-httpd_access-group',
-        :file => '/var/log/httpd/mysite.com/access_log',
-        :datetime_format => '%d/%b/%Y:%H:%M:%S %z',
-        :initial_position => 'end_of_file'
-    }
+<table>
+  <tr>
+    <td><tt>['cwlogs']['region']</tt></td>
+    <td>String</td>
+    <td>_(Required)_ The AWS region where the CloudWatch Logs are stored</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>['cwlogs']['aws_access_key_id']</tt></td>
+    <td>String</td>
+    <td>_(Optional)_ The AWS access key used to push logs to CloudWatch Logs</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cwlogs']['aws_secret_access_key']</tt></td>
+    <td>String</td>
+    <td>_(Optional)_ The AWS access secret</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cwlogs']['installer_file']</tt></td>
+    <td>String</td>
+    <td>_(Optional)_ The file to use for installing the AWS CloudWatch Logs Agent</td>
+    <td><tt>https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['cwlogs']['use_gzip_http_content_encoding']</tt></td>
+    <td>String</td>
+    <td>_(Optional)_ Whether to use gzip compression when sending logs to AWS</td>
+    <td><tt>true</tt></td>
+  </tr>
+</table>
 
-    default['cwlogs']['logfiles']['mysite-httpd_error'] = {
-        :log_stream_name => '{instance_id}',
-        :log_group_name => 'mysite-httpd_error-group',
-        :file => '/var/log/httpd/mysite.com/error_log',
-        :datetime_format => '%d/%b/%Y:%H:%M:%S %z',
-        :initial_position => 'end_of_file'
-    }
+## Usage
 
-From any attributes file will generate the following CloudWatch Logs config:
+### `cwlogs::default`
 
-    [mysite.com-httpd_access]
-    log_stream_name = {instance_id}
-    log_group_name = mysite.com-httpd_access-group
-    file = /var/log/httpd/mysite.com/access_log
-    datetime_format = %d/%b/%Y:%H:%M:%S %z
-    initial_position = end_of_file
+Add `cwlogs` in your node's `run_list`:
 
-    [mysite.com-httpd_error]
-    log_stream_name = {instance_id}
-    log_group_name = mysite.com-httpd_error-group
-    file = /var/log/httpd/mysite.com/error_log
-    datetime_format = %d/%b/%Y:%H:%M:%S %z
-    initial_position = end_of_file
+```json
+{
+  "name":"my_node",
+  "run_list": [
+    "recipe[cwlogs]"
+  ]
+}
+```
 
-All hash elements will pass through to the config file, so for example you can use `encoding` or any other supported
-config element.  See the [AWS CloudWatch Logs configuration reference][1] for details.
+This recipe installs the Amazon CloudWatch Logs Agent and exploses an LWRP for configuring CloudWatch Logs.
 
-[1](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/AgentReference.html)
+## Resources
+
+### `cwlogs_log_file`
+
+Used to configure CloudWatch Logs Agent to tail a log file. [See Amazon's documentation](http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html) for a more thorough explanation of these configuration options.
+
+### Actions
+
+- `create` - Creates a configuration file for the given log file
+- `delete` - Deletes a configuration file
+
+### Properties:
+
+- `log_group_name` - The CloudWatch Logs group name. Defaults to the resource's name if not provided.
+- `log_stream_name` - The stream name. Defaults to `{hostname}`. Any string will work or the special variables `{ip_address}` or `{instance_id}`.
+- `datetime_format` - The datetime format for the given log file.
+- `time_zone` - Timezone of the log file. UTC is the default.
+- `file` - The log file to tail. Defaults to resource's name.
+- `file_fingerprint_lines` - Specifies the range of lines for identifying a file.
+- `multi_line_start_pattern` - Specifies the pattern for identifying the start of a log message.
+- `initial_position` - Specifies where to start to read data (`start_of_file` or `end_of_file`). Defaults to `start_of_file`.
+- `encoding` - Specifies the encoding of the log file so that the file can be read correctly. Defaults to `utf_8`.
+- `buffer_duration` - Specifies the time duration for the batching of log events in ms. Default is `5000`, which is the minimum value.
+- `batch_count` - Specifies the max number of log events in a batch, up to `10000`. The default value is `1000`.
+- `batch_size` - Specifies the max size of log events in a batch, in bytes, up to `1048576` bytes. The default value is `32768` bytes. 
+- `owner` - Owner of the configuration file. Defaults to `root`.
+- `group` - Group for the configuration file. Defaults to `root`.
+- `mode` - The mode of the configuration file. Defaults to `0644`.
+
+### Example:
+
+```ruby
+cwlogs_log_file "/var/log/auth.log" do
+  log_group_name 'mysite-auth-logs'
+  action :create
+end
+```

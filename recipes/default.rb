@@ -13,7 +13,7 @@ end
   end
 end
 
-template "#{node['cwlogs']['base_dir']}/etc/awscli.conf" do
+template "#{node['cwlogs']['base_dir']}/etc/aws.conf" do
   source 'awscli.conf.erb'
   owner 'root'
   group 'root'

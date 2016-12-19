@@ -1,7 +1,7 @@
 # DO NOT EDIT! This file is managed by Chef.
 # ALL CHANGES WILL BE LOST NEXT TIME CHEF RUNS!
 # http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html
-[<%= @stream_name %>]
+[<%= @log_group_name %>]
 log_group_name = <%= @log_group_name %>
 log_stream_name = <%= @log_stream_name %>
 <% unless @datetime_format.nil? %>
