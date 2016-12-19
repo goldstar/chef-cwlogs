@@ -10,7 +10,7 @@ remote_file setup_script do
   not_if { ::File.exist?(setup_script) }
 end
 
-template "/tmp/cwlogs-install.conf" do
+template '/tmp/cwlogs-install.conf' do
   source 'awslogs.conf.erb'
   owner 'root'
   group 'root'
@@ -30,14 +30,14 @@ when 'ubuntu'
     include_recipe 'cron'
   elsif node['platform_version'].to_i == 16
     %w(python python-pip).each do |package_name|
-      package package_name do 
+      package package_name do
         action :install
         not_if { ::File.exist?('/usr/bin/python') }
       end
     end
     # Set up the systemd file.
-    template "/etc/systemd/system/awslogs.service" do
-      source "awslogs.service.erb"
+    template '/etc/systemd/system/awslogs.service' do
+      source 'awslogs.service.erb'
       action :create
     end
   end
@@ -68,21 +68,21 @@ template "#{node['cwlogs']['base_dir']}/etc/awslogs.conf" do
   notifies :restart, 'service[awslogs]'
 end
 
-file "/etc/init.d/awslogs" do
+file '/etc/init.d/awslogs' do
   action :delete
   only_if { node['platform_version'].to_i == 16 }
 end
 
 service 'awslogs' do
   supports [:start, :stop, :status, :restart]
-case node['platform']
-when 'ubuntu'
-  if node['platform_version'].to_i == 16
-    provider Chef::Provider::Service::Systemd
-    action [:enable, :start]
-  else
-    provider Chef::Provider::Service::Init
-    action :nothing
+  case node['platform']
+  when 'ubuntu'
+    if node['platform_version'].to_i == 16
+      provider Chef::Provider::Service::Systemd
+      action [:enable, :start]
+    else
+      provider Chef::Provider::Service::Init
+      action :nothing
+    end
   end
-end
 end
