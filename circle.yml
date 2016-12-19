@@ -1,4 +1,9 @@
 ---
+machine:
+  ruby:
+    version: 2.3.1
+  services:
+    - docker
 test:
   override:
     - bundle exec rake style:chef
