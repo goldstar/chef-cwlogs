@@ -26,24 +26,23 @@ end
 
 action :create do
   stream_name = sanitize(new_resource.name)
-  log_group_name = log_group_name.nil? ? new_resource.name : log_group_name
 
   template "#{node['cwlogs']['base_dir']}/etc/config/#{stream_name}.conf" do
     source 'log_file.conf.erb'
     cookbook 'cwlogs'
     variables(
-      log_group_name: log_group_name,
-      log_stream_name: log_stream_name,
-      datetime_format: datetime_format,
-      time_zone: time_zone,
-      file: file,
-      file_fingerprint_lines: file_fingerprint_lines,
-      multi_line_start_pattern: multi_line_start_pattern,
-      initial_position: initial_position,
-      encoding: encoding,
-      buffer_duration: buffer_duration,
-      batch_count: batch_count,
-      batch_size: batch_size
+      log_group_name: new_resource.log_group_name || new_resource.name,
+      log_stream_name: new_resource.log_stream_name,
+      datetime_format: new_resource.datetime_format,
+      time_zone: new_resource.time_zone,
+      file: new_resource.file,
+      file_fingerprint_lines: new_resource.file_fingerprint_lines,
+      multi_line_start_pattern: new_resource.multi_line_start_pattern,
+      initial_position: new_resource.initial_position,
+      encoding: new_resource.encoding,
+      buffer_duration: new_resource.buffer_duration,
+      batch_count: new_resource.batch_count,
+      batch_size: new_resource.batch_size
     )
     owner owner
     group group
