@@ -68,6 +68,15 @@ template "#{node['cwlogs']['base_dir']}/etc/awslogs.conf" do
   notifies :restart, 'service[awslogs]'
 end
 
+template "#{node['cwlogs']['base_dir']}/etc/proxy.conf" do
+  source 'proxy.conf.erb'
+  owner 'root'
+  group 'root'
+  mode 0o644
+
+  notifies :restart, 'service[awslogs]'
+end
+
 file '/etc/init.d/awslogs' do
   action :delete
   only_if { node['platform_version'].to_i == 16 }

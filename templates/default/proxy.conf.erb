@@ -1,0 +1,7 @@
+# DO NOT EDIT! This file is maintained by Chef
+# ALL EDITS WILL BE LOST WHEN CHEF RUNS
+
+# Version: 1.4.3
+# Refer to http://docs.aws.amazon.com/cli/latest/userguide/cli-http-proxy.html for details.
+HTTP_PROXY=<%= node['cwlogs'].fetch('http_proxy', '') %>
+HTTPS_PROXY=<%= node['cwlogs'].fetch('https_proxy', '') %>
