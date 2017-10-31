@@ -1,4 +1,3 @@
-[Unit]
 Description=The CloudWatch Logs Agent
 After=rc-local.service
 
@@ -7,8 +6,13 @@ Type=simple
 Restart=always
 KillMode=process
 TimeoutSec=infinity
+Nice=4
 PIDFile=<%= node['cwlogs']['base_dir'] %>/state/awslogs.pid
-ExecStart=<%= node['cwlogs']['base_dir'] %>/bin/awslogs-agent-launcher.sh &
+EnvironmentFile=-<%= node['cwlogs']['base_dir'] %>/etc/proxy.conf
+EnvironmentFile=-/etc/default/awslogs
+Environment="HOME=<%= node['cwlogs']['base_dir'] %>"
+Environment="AWS_CONFIG_FILE=<%= node['cwlogs']['base_dir'] %>/etc/aws.conf"
+ExecStart=<%= node['cwlogs']['base_dir'] %>/bin/aws logs push --config-file <%= node['cwlogs']['base_dir'] %>/etc/awslogs.conf --additional-configs-dir <%= node['cwlogs']['base_dir'] %>/etc/config
 
 [Install]
 WantedBy=multi-user.target
