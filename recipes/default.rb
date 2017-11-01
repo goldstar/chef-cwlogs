@@ -1,3 +1,5 @@
+include_recipe 'cron' # /etc/cron.d is required
+
 directory "#{node['cwlogs']['base_dir']}/bin" do
   recursive true
   action :create
@@ -24,22 +26,24 @@ end
 
 case node['platform']
 when 'ubuntu'
-  package 'cron' # /etc/cron.d is required.
-  if node['platform_version'].to_i == 12
-    node.default['cron']['emulate_cron.d'] = true
-    include_recipe 'cron'
-  elsif node['platform_version'].to_i == 16
-    %w(python python-pip).each do |package_name|
-      package package_name do
-        action :install
-        not_if { ::File.exist?('/usr/bin/python') }
-      end
+  %w(python python-pip).each do |package_name|
+    package package_name do
+      action :install
+      not_if { ::File.exist?('/usr/bin/python') }
     end
-    # Set up the systemd file.
-    template '/etc/systemd/system/awslogs.service' do
-      source 'awslogs.service.erb'
-      action :create
-    end
+  end
+
+  # awslogs-agent-setup.py writes this file incorrectly for older Ubuntus
+  cookbook_file '/etc/logrotate.d/awslogs' do
+    source 'logrotate_awslogs'
+    only_if node['platform_version'].to_i <= 12
+  end
+
+  # Set up the systemd file.
+  template '/etc/systemd/system/awslogs.service' do
+    source 'awslogs.service.erb'
+    action :create
+    only_if node['platform_version'].to_i == 16
   end
 end
 

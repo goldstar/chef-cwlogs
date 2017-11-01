@@ -1,0 +1,15 @@
+# DO NOT EDIT! This file is maintained by Chef
+# ALL EDITS WILL BE LOST WHEN CHEF RUNS
+
+/var/log/awslogs.log {
+    missingok
+    notifempty
+    size 100M
+    create 0600 root root
+    delaycompress
+    compress
+    rotate 4
+    postrotate
+        service awslogs restart
+    endscript
+}
