@@ -38,13 +38,6 @@ when 'ubuntu'
     source 'logrotate_awslogs'
     only_if { node['platform_version'].to_i <= 12 }
   end
-
-  # Set up the systemd file.
-  template '/etc/systemd/system/awslogs.service' do
-    source 'awslogs.service.erb'
-    action :create
-    only_if { node['platform_version'].to_i == 16 }
-  end
 end
 
 execute 'Install CloudWatch Logs Agent' do
@@ -81,21 +74,6 @@ template "#{node['cwlogs']['base_dir']}/etc/proxy.conf" do
   notifies :restart, 'service[awslogs]'
 end
 
-file '/etc/init.d/awslogs' do
-  action :delete
-  only_if { node['platform_version'].to_i == 16 }
-end
-
 service 'awslogs' do
-  supports [:start, :stop, :status, :restart]
-  case node['platform']
-  when 'ubuntu'
-    if node['platform_version'].to_i == 16
-      provider Chef::Provider::Service::Systemd
-      action [:enable, :start]
-    else
-      provider Chef::Provider::Service::Init
-      action :nothing
-    end
-  end
+  action [:enable, :start]
 end
