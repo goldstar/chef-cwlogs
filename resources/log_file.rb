@@ -2,7 +2,7 @@ resource_name :cwlogs_log_file
 
 property :log_group_name, String
 property :log_stream_name, String, default: '{hostname}'
-property :datetime_format, String, default: '%b %d %H:%M:%S'
+property :datetime_format, String
 property :time_zone, String
 property :file, String, name_attribute: true
 property :file_fingerprint_lines, [String, Integer]
