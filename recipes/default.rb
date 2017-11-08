@@ -52,6 +52,10 @@ template "#{node['cwlogs']['base_dir']}/etc/aws.conf" do
   owner 'root'
   group 'root'
   mode 0o644
+  variables(
+    aws_access_key_id: lazy { node['cwlogs']['aws_access_key_id'] },
+    aws_secret_access_key: lazy { node['cwlogs']['aws_secret_access_key'] }
+  )
 
   notifies :restart, 'service[awslogs]'
 end
