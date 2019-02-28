@@ -1,16 +1,18 @@
 ---
 driver:
-  name: docker
-  use_sudo: false
-  dns:
-    - 8.8.8.8
-    - 8.8.4.4
+  name: dokken
+  chef_version: latest
+  privileged: true
 
 driver_config:
   socket: <%= ENV['DOCKER_HOST'] || 'unix:///var/run/docker.sock' %>
+  use_internal_docker_network: true
+
+transport:
+  name: dokken
 
 provisioner:
-  name: chef_zero
+  name: dokken
   cookbook_paths:
     - ./test/cookbooks
   attributes:
@@ -20,14 +22,14 @@ provisioner:
       aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
 
 platforms:
-  - name: ubuntu-12.04
-  - name: ubuntu-14.04
-<% if !ENV.key?('CI') %>
   - name: ubuntu-16.04
     driver:
-      name: vagrant
-      box: bento/ubuntu-16.04
-<% end %>
+      image: dokken/ubuntu-16.04
+      pid_one_command: /bin/systemd
+
+verifier:
+  root_path: '/opt/verifier'
+  sudo: false
 
 suites:
   - name: default
